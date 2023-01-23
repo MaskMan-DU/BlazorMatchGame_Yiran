@@ -26,6 +26,6 @@ Extra Improvement：
 
 And the feature is particularly implemented.
 
-2.  I made the images for all 16 buttons are the same and the player only sees the "shuffled animal" image after they click on a button
+2. I made the images for all 16 buttons are the same and the player only sees the "shuffled animal" image after they click on a button
 
 And the feature is planned.
