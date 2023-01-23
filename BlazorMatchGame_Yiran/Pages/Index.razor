@@ -1,0 +1,342 @@
+﻿
+@page "/"
+
+@using System.Timers
+
+<style>
+    .container {
+        width: 400px;
+    }
+
+    button {
+        width: 100px;
+        height: 100px;
+        font-size: 50px;
+    }
+
+        button.btn-secondary {
+            width: 50px;
+            height: 40px;
+            font-size: 5px;
+        }
+</style>
+
+<div class="container">
+
+    @*Here use button to change the difficulty level of the game
+        the "buttonNumber" will be the difficulty level.
+        The level will connet with time.*@
+    <div class="row mt-2">
+        <div class="col-sm-6">
+            <strong>Choose a difficulty level(or reset game):</strong>
+        </div>
+
+        <div class="col-sm-7 btn-group" role="group">
+            @for (var buttonNumber = 1; buttonNumber <= 3; buttonNumber++)
+            {
+                string valueToDisplay = $"Level {buttonNumber}";
+                <button type="button" class="btn btn-secondary"
+                        @onclick="() => ChooceDifficult(valueToDisplay)">
+                    @buttonNumber
+                </button>
+            }
+        </div>
+    </div>
+
+    <div class="row mt-5">
+        <h2>
+            Here's the difficulty Level: <strong>@DifficultyLevel</strong>
+        </h2>
+    </div>
+
+    <div class="row">
+        @for (var animalNumber = 0; animalNumber < shuffledAnimals.Count; animalNumber++)
+        {
+
+            var animal = shuffledAnimals[animalNumber];
+            var uniqueDescription = $"Button {animalNumber}";
+            var riddleMark = riddle[animalNumber];
+            int index = animalNumber;
+
+            <div class="col-3">
+                <button @onclick="@(() => ButtonClick(animal, uniqueDescription, index))"
+                        type="button" class="btn btn-outline-dark">
+                    <h1>@riddleMark</h1>
+                </button>
+            </div>
+        }
+    </div>
+
+    <div class="row">
+        <h2>Time: @timeDisplay</h2>
+    </div>
+
+    <div class="row">
+        <h2>Score: @score</h2>
+    </div>
+
+    <div class="row">
+        <h3>Best score-Level 1: @bestScore[0]</h3>
+    </div>
+
+    <div class="row">
+        <h3>Best score-Level 2: @bestScore[1]</h3>
+    </div>
+
+    <div class="row">
+        <h3>Best score-Level 3: @bestScore[2]</h3>
+    </div>
+</div>
+
+@code {
+
+    List<string> animalEmoji = new List<string>()
+{
+        "🐕", "🐕",
+        "🐱", "🐱",
+        "🐎", "🐎",
+        "🐅", "🐅",
+        "🍉", "🍉",
+        "🍎", "🍎",
+        "🍌", "🍌",
+        "🐘", "🐘",
+    };
+
+    List<string> riddle = new List<string>
+{
+        "❓","❓",
+        "❓","❓",
+        "❓","❓",
+        "❓","❓",
+        "❓","❓",
+        "❓","❓",
+        "❓","❓",
+        "❓","❓",
+    };
+
+    List<string> shuffledAnimals = new List<string>();
+
+    int matchesFound = 0;
+
+    // Add a variable to keep the score
+    int score = 0;
+
+    Timer timer;
+
+    int tenthsOfSecondsElapsed = 0;
+
+    //Total time will change with game level
+    float totalTimeOfDifferentLevel; // This variable keeps the total time of different level
+
+    float timeToShow; // This variable will be the time to show.
+
+    string timeDisplay; // Keeping the string format of the time.
+
+    // This is used to keep the level in string format.
+    string DifficultyLevel = "";
+
+
+    // Add a new list to keep the best score of different level
+    List<int> bestScore = new List<int>()
+{
+        0, 0, 0
+    };
+
+
+    // Start of the program
+    protected override void OnInitialized()
+    {
+        timer = new Timer(100);
+
+        timer.Elapsed += Timer_Tick;
+
+        // The start level is Level 1.
+        DifficultyLevel = "Level 1";
+
+        // This is the total time of level 1;
+        totalTimeOfDifferentLevel = 50.0f;
+
+        // When the website open the first game apperance, it will show you the total time of level 1
+        timeDisplay = $"{totalTimeOfDifferentLevel}s - Play Level 1?";
+
+        SetUpGame();
+    }
+
+
+    // Refresh the game
+    private void SetUpGame()
+    {
+        Random random = new Random();
+
+        shuffledAnimals = animalEmoji
+        .OrderBy(item => random.Next())
+        .ToList();
+
+        for (int i = 0; i < 16; i++)
+        {
+            riddle[i] = "❓";
+        }
+
+        matchesFound = 0;
+
+        tenthsOfSecondsElapsed = 0;
+
+        // Clean the score
+        score = 0;
+    }
+
+    string lastAnimalFound = string.Empty;
+
+    string lastDescription = string.Empty;
+
+    // Set firstChoose and secondChoose to keep the first clicked button and second clicked button index
+    int firstChoose;
+
+    int secondChoose;
+
+    // int lastChoose;
+
+    private void ButtonClick(string animal, string animalDescription, int index)
+    {
+
+        // Check if the button is pressed for the first time when the game starts, and if the button image is empty.
+        if ((lastAnimalFound == string.Empty) && (riddle[index] != string.Empty))
+        {
+            // When click the wrong button the next clicking will restore the first two buttons' images to question mark, this action need to run first
+            if (riddle[firstChoose] != string.Empty)
+            {
+                riddle[firstChoose] = "❓";
+                riddle[secondChoose] = "❓";
+            }
+
+            lastAnimalFound = animal; // Record button image
+
+            lastDescription = animalDescription; // Record the clicked button
+
+            firstChoose = index; // Record the first clicked button's index
+
+            riddle[index] = animal; // Flip the image, change it from question mark to image
+
+            timer.Start(); // Start timer
+        }
+        // Check that the images on the buttons clicked twice are the same and that the two clicks are on different buttons
+        else if ((lastAnimalFound == animal) && (animalDescription != lastDescription) && (riddle[index] != string.Empty))
+        {
+            lastAnimalFound = string.Empty; // clear the data
+
+            riddle[index] = animal;
+
+            riddle = riddle
+            .Select(a => a.Replace(animal, string.Empty))
+            .ToList(); // Replace the image of the button with empty
+
+            matchesFound++; // Plus 1 match found
+
+            score += 5; // Plus 5 point
+
+            // Check if the game is finished
+            if (matchesFound == 8)
+            {
+                timer.Stop(); // Stop the timer
+
+                timeDisplay += "- Play Again?";
+
+                SaveBestScore(score); // Use the method "Save Best Score"
+
+                SetUpGame(); // Here to reset the game
+            }
+
+        }
+        // Check if the second button has image
+        else if (riddle[index] != string.Empty)
+        {
+            lastAnimalFound = string.Empty; // If the image of the second clicked button does not match the first, clear the data stored in this variable
+
+            secondChoose = index; // Record the second clicked button's index
+
+            riddle[index] = animal;  // Flip the image, change it from question mark to image
+
+            score--; // When there is no successful match, minus one point
+        }
+    }
+
+    private void Timer_Tick(Object source, ElapsedEventArgs e)
+    {
+        InvokeAsync(() =>
+        {
+            tenthsOfSecondsElapsed++;
+
+            timeToShow = totalTimeOfDifferentLevel - tenthsOfSecondsElapsed / 10F;
+
+        // When the time running out the time will stop and timeDisplay will show you lose.
+        if (timeToShow >= 0.0f)
+            {
+                timeDisplay = timeToShow
+                .ToString("0.0s");
+                StateHasChanged();
+            }
+            else
+            {
+                timeDisplay = "You lose!";
+                timer.Stop();
+            }
+        });
+    }
+
+    // Change the level of game
+    private void ChooceDifficult(string level)
+    {
+        DifficultyLevel = level;
+        // Player can click different button to change the game level and reset the game
+        if (DifficultyLevel == "Level 1") // When the game level is 1, the total time will be 10.0s
+        {
+            totalTimeOfDifferentLevel = 40.0f;
+
+            timer.Stop(); // When change level the time will stop
+
+            timeDisplay = $"{totalTimeOfDifferentLevel}s - Play Level 1?"; // And then the time display will change
+
+            SetUpGame(); // Finally, whole game will reset
+        }
+        else if (DifficultyLevel == "Level 2") // When the game level is 2, the total time will be 8.0s
+        {
+            totalTimeOfDifferentLevel = 30.0f;
+
+            timer.Stop();
+
+            timeDisplay = $"{totalTimeOfDifferentLevel}s - Play Level 2?";
+
+            SetUpGame();
+        }
+        else if (DifficultyLevel == "Level 3") // When the game level is 3, the total time will be 6.0s
+        {
+            totalTimeOfDifferentLevel = 20.0f;
+
+            timer.Stop();
+
+            timeDisplay = $"{totalTimeOfDifferentLevel}s - Play Level 3?";
+
+            SetUpGame();
+        }
+    }
+
+
+    // Save the best score of each level game
+    private void SaveBestScore(int score)
+    {
+        // When the game level is level 1 and the best score lower than the new score and the time doesn't run out, the score will be save as the best score.
+        if (DifficultyLevel == "Level 1" && bestScore[0] < score && timeToShow >= 0)
+        {
+            bestScore[0] = score;
+        }
+        else if (DifficultyLevel == "Level 2" && bestScore[1] < score && timeToShow >= 0)
+        {
+            bestScore[1] = score;
+        }
+        else if (DifficultyLevel == "Level 3" && bestScore[2] < score && timeToShow >= 0)
+        {
+            bestScore[2] = score;
+        }
+    }
+}
+
