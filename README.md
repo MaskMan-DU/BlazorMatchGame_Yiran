@@ -24,8 +24,8 @@ Extra Improvement：
 
 1. I changed the game timer to countdown. I want to show "You lose" when the countdown is over, then the game will reset
 
-And the feature is fully implemented.
+And the feature is particularly implemented.
 
 2.  I made the images for all 16 buttons are the same and the player only sees the "shuffled animal" image after they click on a button
 
-And the feature is fully implemented.
+And the feature is planned.
