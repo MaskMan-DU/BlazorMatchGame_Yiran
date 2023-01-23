@@ -92,7 +92,7 @@
 
     // This list hold all images
     List<string> animalEmoji = new List<string>()
-    {
+{
         "🐕", "🐕",
         "🐱", "🐱",
         "🐎", "🐎",
@@ -105,7 +105,7 @@
 
     // This list hold all "❓"
     List<string> riddle = new List<string>
-    {
+{
         "❓","❓",
         "❓","❓",
         "❓","❓",
@@ -146,7 +146,8 @@
     };
 
 
-    // Start of the program
+
+    // Here is the first time the program sets up the game
     protected override void OnInitialized()
     {
         timer = new Timer(100);
@@ -167,7 +168,12 @@
     }
 
 
-    // Refresh the game
+    @*
+        Method: SetUpGame()
+        Function: Shuffle the images stored inside variable "animalEmoji" then import the disrupted images into variable "shuffledAnimals".
+                  Replace the contents stored in the variable "riddle" back to "❓".
+                  Reset the Timer, the "score" and the "matchesFound".
+    *@
     private void SetUpGame()
     {
         Random random = new Random();
@@ -186,6 +192,7 @@
         // Reset "matchesFound"
         matchesFound = 0;
 
+        // Use this varialbe to reset the Timer
         tenthsOfSecondsElapsed = 0;
 
         // Clean the score
@@ -202,7 +209,10 @@
     int secondChoose;
 
 
-    
+    @*
+        Method: ButtonClick(string animal, string animalDescription, int index)
+        Function:
+    *@
     private void ButtonClick(string animal, string animalDescription, int index)
     {
 
@@ -267,6 +277,7 @@
         }
     }
 
+    // This is the Timer
     private void Timer_Tick(Object source, ElapsedEventArgs e)
     {
         InvokeAsync(() =>
@@ -275,8 +286,8 @@
 
             timeToShow = totalTimeOfDifferentLevel - tenthsOfSecondsElapsed / 10F;
 
-            // When the time running out the time will stop and timeDisplay will show you lose.
-            if (timeToShow >= 0.0f)
+        // When the time running out the time will stop and timeDisplay will show you lose.
+        if (timeToShow >= 0.0f)
             {
                 timeDisplay = timeToShow
                 .ToString("0.0s");
@@ -290,14 +301,20 @@
         });
     }
 
-    // Change the level of game
+
+
+
+    @*
+        Method: ChooceDifficult(string level)
+        Function: Change the level of game
+    *@
     private void ChooceDifficult(string level)
     {
         DifficultyLevel = level;
         // Player can click different button to change the game level and reset the game
         if (DifficultyLevel == "Level 1") // When the game level is 1, the total time will be 10.0s
         {
-            totalTimeOfDifferentLevel = 40.0f;
+            totalTimeOfDifferentLevel = 40.0f; // This is the total time of this level
 
             timer.Stop(); // When change level the time will stop
 
@@ -328,7 +345,10 @@
     }
 
 
-    // Save the best score of each level game
+    @*
+        Method: SaveBestScore(int score)
+        Function: Save the best score of each level game
+    *@
     private void SaveBestScore(int score)
     {
         // When the game level is level 1 and the best score lower than the new score and the time doesn't run out, the score will be save as the best score.
