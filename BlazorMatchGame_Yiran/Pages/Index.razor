@@ -90,8 +90,9 @@
 
 @code {
 
+    // This list hold all images
     List<string> animalEmoji = new List<string>()
-{
+    {
         "🐕", "🐕",
         "🐱", "🐱",
         "🐎", "🐎",
@@ -102,8 +103,9 @@
         "🐘", "🐘",
     };
 
+    // This list hold all "❓"
     List<string> riddle = new List<string>
-{
+    {
         "❓","❓",
         "❓","❓",
         "❓","❓",
@@ -114,6 +116,7 @@
         "❓","❓",
     };
 
+    // This empty list will store shuffled images
     List<string> shuffledAnimals = new List<string>();
 
     int matchesFound = 0;
@@ -159,6 +162,7 @@
         // When the website open the first game apperance, it will show you the total time of level 1
         timeDisplay = $"{totalTimeOfDifferentLevel}s - Play Level 1?";
 
+        // This is the first time to set up game
         SetUpGame();
     }
 
@@ -168,15 +172,18 @@
     {
         Random random = new Random();
 
+        // Here all pictures are shuffled
         shuffledAnimals = animalEmoji
         .OrderBy(item => random.Next())
         .ToList();
 
+        // Restore "riddle" every time you reset the game
         for (int i = 0; i < 16; i++)
         {
             riddle[i] = "❓";
         }
 
+        // Reset "matchesFound"
         matchesFound = 0;
 
         tenthsOfSecondsElapsed = 0;
@@ -194,8 +201,8 @@
 
     int secondChoose;
 
-    // int lastChoose;
 
+    
     private void ButtonClick(string animal, string animalDescription, int index)
     {
 
@@ -268,8 +275,8 @@
 
             timeToShow = totalTimeOfDifferentLevel - tenthsOfSecondsElapsed / 10F;
 
-        // When the time running out the time will stop and timeDisplay will show you lose.
-        if (timeToShow >= 0.0f)
+            // When the time running out the time will stop and timeDisplay will show you lose.
+            if (timeToShow >= 0.0f)
             {
                 timeDisplay = timeToShow
                 .ToString("0.0s");
