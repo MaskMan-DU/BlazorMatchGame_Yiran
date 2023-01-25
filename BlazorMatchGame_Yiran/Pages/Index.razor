@@ -76,7 +76,7 @@
     </div>
 
     <div class="row">
-        <h3>Best score-Level 1: @bestScore[0]</h3>
+        <h3>Best score-Level 1: @bestScore[0] </h3>
     </div>
 
     <div class="row">
@@ -211,7 +211,9 @@
 
     @*
         Method: ButtonClick(string animal, string animalDescription, int index)
-        Function: 
+        Function: When the button is clicked, the symbol "❓" displayed on the button switches to an image.
+                  When two different buttons are clicked and they appear with the same image, the images on both buttons will disappear.
+                  Otherwise those two buttons will revert to their initial state the next time the other button is clicked, and they will display symbol "❓" again.
     *@
     private void ButtonClick(string animal, string animalDescription, int index)
     {
@@ -301,9 +303,6 @@
         });
     }
 
-
-
-
     @*
         Method: ChooceDifficult(string level)
         Function: Change the difficult level of the game, different level meaning different total time.
@@ -357,10 +356,12 @@
         {
             bestScore[0] = score;
         }
+        // When the game level is level 2 and the best score lower than the new score and the time doesn't run out, the score will be save as the best score.
         else if (DifficultyLevel == "Level 2" && bestScore[1] < score && timeToShow >= 0)
         {
             bestScore[1] = score;
         }
+        // When the game level is level 2 and the best score lower than the new score and the time doesn't run out, the score will be save as the best score.
         else if (DifficultyLevel == "Level 3" && bestScore[2] < score && timeToShow >= 0)
         {
             bestScore[2] = score;
